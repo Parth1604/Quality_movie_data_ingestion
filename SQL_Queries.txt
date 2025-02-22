@@ -1,0 +1,47 @@
++++ the most common pair of lead actors who have appeared together in the most movies.
+
+SELECT Star1, Star2, COUNT(*) AS Movie_Count
+FROM(
+    SELECT Star1, Star2 FROM movies.imdb_movies_rating
+    UNION ALL
+    SELECT Star1, Star3 FROM movies.imdb_movies_rating
+    UNION ALL
+    SELECT Star1, Star4 FROM movies.imdb_movies_rating
+    UNION ALL
+    SELECT Star2, Star3 FROM movies.imdb_movies_rating
+    UNION ALL
+    SELECT Star2, Star4 FROM movies.imdb_movies_rating
+    UNION ALL
+    SELECT Star3, Star4 FROM movies.imdb_movies_rating
+) AS actor_pairs
+GROUP BY Star1, Star2
+ORDER BY Movie_Count DESC
+LIMIT 3;
+
+
++++ the longest movie runtime in each genre
+
+SELECT Genre, Series_Title, Runtime
+FROM movies.imdb_movies_rating AS m1
+WHERE Runtime = (
+    SELECT MAX(Runtime) 
+    FROM movies.imdb_movies_rating AS m2
+    WHERE m1.Genre = m2.Genre
+)
+ORDER BY Genre;
+
+
++++ the top 5 highest-grossing movies per decade
+
+WITH MovieDecades AS (
+    SELECT *, 
+           (Released_Year / 10) * 10 AS Decade 
+    FROM movies.imdb_movies_rating
+)
+SELECT Decade, Series_Title, Gross
+FROM (
+    SELECT Decade, Series_Title, Gross, 
+           ROW_NUMBER() OVER (PARTITION BY Decade ORDER BY Gross DESC) AS Rank
+    FROM MovieDecades
+) AS RankedMovies
+WHERE Rank <= 5;
