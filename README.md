@@ -53,7 +53,7 @@ This project implements an **automated data ingestion pipeline** for movie datas
 
 ## **📸 Screenshots & Architecture Diagram**
 📌 *Architecture Diagram:*  
-![Architecture Diagram](architecture/diagram.png)  
+![Architecture Diagram](Architecture.jpeg)  
 
 ---
 
